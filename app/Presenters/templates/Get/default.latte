@@ -1,0 +1,26 @@
+{block content}
+<a n:href="Post:default">Zpět na hlavní formulář</a>
+<h2>{$title}</h2>	
+<table border="1" cellpadding="5px">
+    <tr>
+        <th>Jméno / Přezdívka</th>
+        <th>Email</th>
+        <th>Praktikování</th>
+        <th>Preferované jezero</th>
+        <th>Preferovaná řeka</th>
+        <th>Příspěvek</th>
+    </tr>
+	<tr n:foreach="$postItems as $item">
+		<td>{$item['nickname']}</td>
+		<td>{$item['email']}</td>
+		<td>{$item['klidna_voda']}</td>
+        <td>{$item['id_jezero']}</td>
+		<td>{$item['id_reka']}</td>
+		<td>{$item['text']}</td>    
+	</tr>
+</table>
+{/block}
+
+{control getForm}
+
+
