@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Nette\Database\Explorer;
+use \Tracy\Debugger;
 
 class PostManager
 {
@@ -23,7 +24,7 @@ class PostManager
         LEFT JOIN reky r ON h.id_reka = r.id';
         $rows = $database->query($queryUvod)->fetchAll();
         $database->commit();
-        //Debugger::barDump($rows);
+        Debugger::barDump($rows);
         return $rows; //Obvykle se vrací DTO - Data Transfer Object(y)
     }
 

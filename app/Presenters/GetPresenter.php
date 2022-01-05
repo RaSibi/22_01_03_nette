@@ -24,9 +24,10 @@ class GetPresenter extends Presenter
         $this->template->title = 'Přehled příspěvků ostravských otužilců';
     }
 
-    public function renderFiltrJmeno($jmeno){
+    public function renderFiltrJmeno($jmeno)
+    {
         $this->template->postItems = $this->postManager->getFiltrJmeno($jmeno);
-        $this->template->title = 'Přehled příspěvků ostravských otužilců - filtr dle jména';        
+        $this->template->title = 'Přehled příspěvků ostravských otužilců - filtr dle jména';
     }
 
     public function createComponentGetForm()
@@ -39,8 +40,4 @@ class GetPresenter extends Presenter
         $form->onSuccess[] = [$this, 'getItemFilter'];
         return $form;
     }
-    
-
-    
-
 }
