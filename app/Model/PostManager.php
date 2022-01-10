@@ -30,21 +30,20 @@ class PostManager
     {
         return $this->database->fetchField('SELECT COUNT(*) FROM hlavni');
     }
-
-    // public function getAllItems()
-    // {
-    //     $database = $this->database;
-    //     $database->beginTransaction();
-    //     $queryUvod = 'SELECT h.nickname, h.email, j.popis AS id_jezero, r.popis AS id_reka, 
-    //     h.klidna_voda, h.tekouci_voda, h.sprcha, h.sauna, text
-    //     FROM hlavni h
-    //     LEFT JOIN jezera j ON h.id_jezero = j.id
-    //     LEFT JOIN reky r ON h.id_reka = r.id';
-    //     $rows = $database->query($queryUvod)->fetchAll();
-    //     $database->commit();
-    //     Debugger::barDump($rows);
-    //     return $rows; //Obvykle se vrací DTO - Data Transfer Object(y)
-    // }
+    
+    //FILTR DLE JMENA
+    //public function getOneItem(int $limit, int $offset, string $jmeno): Nette\Database\ResultSet
+    public function getOneItem(string $jmeno): Nette\Database\ResultSet
+    {
+        return $this->database->query('SELECT h.nickname, h.email, j.popis AS id_jezero, r.popis AS id_reka,
+        h.klidna_voda, h.tekouci_voda, h.sprcha, h.sauna, text
+        FROM hlavni h
+        LEFT JOIN jezera j ON h.id_jezero = j.id
+        LEFT JOIN reky r ON h.id_reka = r.id
+        WHERE h.nickname = ?',
+        $jmeno);
+        //OFFSET ?',$jmeno, $limit, $offset);
+    }
 
     public function savePostItems($nick, $email, $klidna, $tekouci, $sprcha, $sauna, $jezero, $reka, $text): void
     {
@@ -59,19 +58,20 @@ class PostManager
             throw $e;
         }
     }
-
-    //FILTR DLE JMENA
-    public function getFiltrJmeno($jmeno)
-    {
-        $database = $this->database;
-        $database->beginTransaction();
-        $queryUvod = 'SELECT h.nickname, h.email, j.popis AS id_jezero, r.popis AS id_reka, h.klidna_voda, h.tekouci_voda, h.sprcha, h.sauna, text
-        FROM hlavni h
-        LEFT JOIN jezera j ON h.id_jezero = j.id
-        LEFT JOIN reky r ON h.id_reka = r.id';
-        $row = $database->fetch($queryUvod . 'WHERE h.nickname = ?', $jmeno);
-        $database->commit();
-        //Debugger::barDump($rows);  je zajímavé zkusit odkomentovat
-        return $row; //Obvykle se vrací DTO - Data Transfer Object(y)
-    }
+    
+    //PUVODNI KOD DLE RADIMA DOSTALA
+    // public function getAllItems()
+    // {
+    //     $database = $this->database;
+    //     $database->beginTransaction();
+    //     $queryUvod = 'SELECT h.nickname, h.email, j.popis AS id_jezero, r.popis AS id_reka, 
+    //     h.klidna_voda, h.tekouci_voda, h.sprcha, h.sauna, text
+    //     FROM hlavni h
+    //     LEFT JOIN jezera j ON h.id_jezero = j.id
+    //     LEFT JOIN reky r ON h.id_reka = r.id';
+    //     $rows = $database->query($queryUvod)->fetchAll();
+    //     $database->commit();
+    //     Debugger::barDump($rows);
+    //     return $rows; //Obvykle se vrací DTO - Data Transfer Object(y)
+    // }
 }

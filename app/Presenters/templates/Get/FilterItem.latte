@@ -1,6 +1,13 @@
 {block content}
 
+<div>
+<a n:href="Get:default">Přehled příspěvků</a>
+<a n:href="Post:default">Zpět na hlavní formulář</a>
+</div>
+
 <h2>{$title}</h2>	
+
+<div class="postItems">
 <table border="1" cellpadding="5px">
     <tr>
         <th>Jméno / Přezdívka</th>
@@ -11,7 +18,7 @@
         <th>Příspěvek</th>
     </tr>
 	<tr n:foreach="$postItems as $item">
-		<td>{$item['nickname']}</td>
+    	<td>{$item['nickname']}</td>
 		<td>{$item['email']}</td>
 		<td>{$item['klidna_voda']}</td>
         <td>{$item['id_jezero']}</td>
@@ -19,6 +26,7 @@
 		<td>{$item['text']}</td>    
 	</tr>
 </table>
+</div>
 
 {/block}
 

@@ -7,6 +7,7 @@ use \Nette\Application\UI\Presenter;
 use App\Model\PostManager;
 use \Nette\Application\UI\Form;
 use Nette;
+use \Tracy\Debugger;
 
 class GetPresenter extends Presenter
 {
@@ -39,13 +40,18 @@ class GetPresenter extends Presenter
     //     $this->template->title = 'Přehled příspěvků ostravských otužilců';
     // }
 
-    
-
-    public function renderFiltrJmeno($jmeno)
+   public function renderFilterItem(Form $form, $values)
     {
-        $this->template->postItems = $this->postManager->getFiltrJmeno($jmeno);
+        Debugger::barDump($form);
+        $values = $form->getValues();
+        $this->template->postItems = $this->postManager->getOneItem($values['nick']);
         $this->template->title = 'Přehled příspěvků ostravských otužilců - filtr dle jména';
     }
+    // public function renderFilterItem($jmeno)
+    // {
+    //     $this->template->postItems = $this->postManager->getOneItem($jmeno);
+    //     $this->template->title = 'Přehled příspěvků ostravských otužilců - filtr dle jména';
+    // }
 
     public function createComponentGetForm()
     {
@@ -54,7 +60,16 @@ class GetPresenter extends Presenter
         $razeni = ['asc' => 'vzestupně', 'des' => 'sestupně'];
         $form->addRadioList('radit', 'Řazení', $razeni);
         $form->addSubmit('insert', 'Odeslat');
-        $form->onSuccess[] = [$this, 'getFilteredItem'];
+        $form->onSuccess[] = [$this, 'renderFilterItem'];
         return $form;
     }
+    // public function postFilterItem(Form $form, $values)
+    // {
+    //     $values = $form->getValues();
+    //     $jmeno = $values->nick;
+    //     $this->postManager->getOneItem($jmeno);
+    //     $this->redirect('Get:renderFilterItem');
+    // }
+
+    
 }
