@@ -2,7 +2,6 @@
 
 namespace App\Presenters;
 
-
 use \Nette\Application\UI\Presenter;
 use App\Model\PostManager;
 use \Nette\Application\UI\Form;
@@ -13,6 +12,8 @@ class GetPresenter extends Presenter
 {
 
     private $postManager;
+    public string $jmeno = " ";
+    //public int $page = 0;
 
     function __construct(PostManager $postManager)
     {
@@ -20,19 +21,21 @@ class GetPresenter extends Presenter
         parent::__construct();
     }
 
-    public function renderDefault(int $page = 1) : void
+    public function renderDefault(int $page = 1): void
+    //public function renderDefault(): void CHYBNE NELZE VYHODIT $PAGE Z PARAMETRU
     {
+        //$page = 1; CHYBA
         $articlesCount = $this->postManager->getPublishedArticlesCount();
         $paginator = new Nette\Utils\Paginator;
         $paginator->setItemCount($articlesCount); // celkový počet článků
-		$paginator->setItemsPerPage(5); // počet položek na stránce
-		$paginator->setPage($page);
+        $paginator->setItemsPerPage(5); // počet položek na stránce
+        $paginator->setPage($page);
+
         $articles = $this->postManager->getAllItems($paginator->getLength(), $paginator->getOffset());
         $this->template->postItems = $articles;
-		// a také samotný Paginator pro zobrazení možností stránkování
-		$this->template->paginator = $paginator;
+        // a také samotný Paginator pro zobrazení možností stránkování
+        $this->template->paginator = $paginator;
         $this->template->title = 'Přehled příspěvků ostravských otužilců';
-        
     }
     // public function renderDefault() : void
     // {
@@ -40,18 +43,21 @@ class GetPresenter extends Presenter
     //     $this->template->title = 'Přehled příspěvků ostravských otužilců';
     // }
 
-   public function renderFilterItem(Form $form, $values)
+    public function onSuccessGetForm(Form $form, $values)
     {
-        Debugger::barDump($form);
         $values = $form->getValues();
-        $this->template->postItems = $this->postManager->getOneItem($values['nick']);
+        $jmeno = $values['nick'];
+        Debugger::barDump($jmeno);
+        $this->redirect('Get:filterItem', $jmeno);
+        //$this->redirect('Get:', $jmeno);
+    }
+    public function renderFilterItem(string $jmeno): void
+    //public function renderDefault(string $jmeno): void  NEFUNGUJE STEJNY NAZEV, ALE JINY PARAMETR
+    {
+        //$this->template->postItems = $this->postManager->getOneItem($values['nick']);
+        $this->template->postItems = $this->postManager->getOneItem($jmeno);
         $this->template->title = 'Přehled příspěvků ostravských otužilců - filtr dle jména';
     }
-    // public function renderFilterItem($jmeno)
-    // {
-    //     $this->template->postItems = $this->postManager->getOneItem($jmeno);
-    //     $this->template->title = 'Přehled příspěvků ostravských otužilců - filtr dle jména';
-    // }
 
     public function createComponentGetForm()
     {
@@ -60,16 +66,7 @@ class GetPresenter extends Presenter
         $razeni = ['asc' => 'vzestupně', 'des' => 'sestupně'];
         $form->addRadioList('radit', 'Řazení', $razeni);
         $form->addSubmit('insert', 'Odeslat');
-        $form->onSuccess[] = [$this, 'renderFilterItem'];
+        $form->onSuccess[] = [$this, 'onSuccessGetForm'];
         return $form;
     }
-    // public function postFilterItem(Form $form, $values)
-    // {
-    //     $values = $form->getValues();
-    //     $jmeno = $values->nick;
-    //     $this->postManager->getOneItem($jmeno);
-    //     $this->redirect('Get:renderFilterItem');
-    // }
-
-    
 }
